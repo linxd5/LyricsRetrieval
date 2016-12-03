@@ -1,7 +1,11 @@
 大作业项目是**使用歌词搜索歌词**。
 
+数据
+- 用 scrapy 爬取网易云音乐的歌词
+
 采用的技术有：
 - word2vec+TFIDF，使用Word2Vec得到词语的表示，然后使用TFIDF作为词语的权重组合得到歌词文档的向量表示。
+- tf-idf + LSA/SVD/PCA
 - WMD，来自这篇论文[From word Embeddings To Document Distances](jmlr.org/proceedings/papers/v37/kusnerb15.pdf)
 
 相关的文件：
