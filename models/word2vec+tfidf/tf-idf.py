@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+# 参考 http://stevenloria.com/finding-important-words-in-a-document-using-tf-idf/
+
 
 # 输入是分词后的文档（使用空格作为分隔符）
 # 输出是每篇文档每个词的 tf-idf 
