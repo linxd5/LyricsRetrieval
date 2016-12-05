@@ -10,7 +10,9 @@
 
 ### 相关的文件：
 
-- Chinese_Word2Vec：来自 http://www.cnblogs.com/Darwin2000/p/5786984.html。 使用中文维基百科训练出来的词向量。文件地址：$titan /data/lindayong/Chinese_Word2Vec 
+- Chinese_Word2Vec：来自 http://www.cnblogs.com/Darwin2000/p/5786984.html。 使用中文维基百科训练出来的词向量。文件地址：$titan /data/lindayong/Chinese_Word2Vec
+
+- lyrics.json_processed：lyrics_json 包含 76333 首歌，经过处理后，剩下 17063 首歌。代码地址：db_project/models/word2vec+tfidf/preprocessed.py  文件地址： $titan /data/lindayong/lyrics.json_processed。 
 
 ### 目录结构说明
 
