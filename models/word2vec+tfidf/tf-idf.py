@@ -19,8 +19,18 @@ def n_containing(word, bloblist):
 def idf(word, bloblist):
     return math.log(len(bloblist) / (1 + n_containing(word, bloblist)))
 
-def tfidf(word, blob, bloblist):
+def tfidf_word(word, blob, bloblist):
     return tf(word, blob) * idf(word, bloblist)
+
+def tfidf_all(bloblist):
+    all_scores = []
+    for i, blob in enumerate(bloblist):
+        scores = {word: tfidf_word(word, blob, bloblist) for word in blob.words}
+        all_scores.append(scores)
+    return all_scores
+
+
+
 
 document1 = tb("""我 来到 北京 清华大学""")
 
@@ -31,9 +41,11 @@ document3 = tb("""小明 硕士 毕业 与 中国 科学院""")
 document4 = tb("""我 爱 北京 天安门""")
 
 bloblist = [document1, document2, document3, document4]
-for i, blob in enumerate(bloblist):
-    print("Top words in document {}".format(i + 1))
-    scores = {word: tfidf(word, blob, bloblist) for word in blob.words}
+
+
+all_scores = tfidf_all(bloblist)
+for i, scores in enumerate(all_scores):
+    print("\n********* document", i)
     for (word, score) in scores.items():
         print("\tWord: {}, TF-IDF: {}".format(word, round(score, 5)))
 
