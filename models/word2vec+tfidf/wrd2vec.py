@@ -2,6 +2,7 @@
 # coding=utf-8
 
 from jieba_seg import jieba_seg
+import gensim
 
 
 doc= """素胚勾勒出青花笔锋浓转淡
@@ -37,3 +38,17 @@ doc= """素胚勾勒出青花笔锋浓转淡
 
 seg_list = jieba_seg(doc)
 print("Default Mode:" + " ".join(seg_list))
+
+
+model = gensim.models.Word2Vec.load('Chinese_Word2Vec/Word60.model')
+
+for word in seg_list:
+    # 换行符的特殊处理
+    print("word:", word)
+    if (word == '\n'):
+        print('change line occur')
+    try:
+        print(model[word], '\n')
+    except KeyError:
+        pass
+

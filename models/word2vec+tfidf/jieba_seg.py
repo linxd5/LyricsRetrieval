@@ -7,7 +7,7 @@
 import jieba
 
 def jieba_seg(doc):
-    seg_list = jieba.cut(doc, cut_all=False)
+    seg_list = jieba.lcut(doc, cut_all=False)
     return seg_list
 
 if __name__ == "__main__":
