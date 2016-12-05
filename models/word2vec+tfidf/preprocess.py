@@ -13,15 +13,16 @@ def preprocess(file):
     with open(file) as f_read:
         with open(write_file, 'w') as f_write:
             for line in f_read:
-                # 匹配歌词字段
-                matchObj = re.match(r'.*"lyrics":"(.*?)"}', line, re.M|re.I)
+                # 匹配歌词, id字段
+                matchObj = re.match(r'.*"id":"(.*?)".*"lyrics":"(.*?)"}', line, re.M|re.I)
 
-                if matchObj and matchObj.group(1):
+                if matchObj and matchObj.group(2):
                     # 替换非中文字符为空格
-                    song = re.sub(u'[^\u4e00-\u9fa5]', u' ', matchObj.group(1))
+                    song = re.sub(u'[^\u4e00-\u9fa5]', u' ', matchObj.group(2))
                     song = re.sub('\s+', ' ', song)
+                    id = matchObj.group(1)
                     if len(re.sub(u' ', u'', song)) > 30:
-                        f_write.write(song + '\n')
+                        f_write.write('<id>'+id+'</id>'+song + '\n')
 
                 temp_num += 1
                 print('+++ Processing song', temp_num)
