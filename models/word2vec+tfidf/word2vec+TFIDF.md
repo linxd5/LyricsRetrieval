@@ -12,3 +12,14 @@
 - 计算查询歌词的 TF-IDF，组合得到查询歌词的向量表示。
 - 与库中的每一首歌做相似度对比，得到推荐歌词。
 - 向前端返回推荐歌词。
+
+
+### 3. 进度报告
+
+#### 2016年12月5日
+- 将 tf-idf 改造成可供调用的函数
+- 配置[虚拟环境](http://docs.python-guide.org/en/latest/dev/virtualenvs/)，通过子目录下的 `.gitignore` 将虚拟环境文件设置为[不上传](http://blog.csdn.net/nyist327/article/details/39207383)。
+
+#### 2016 年12月3日
+参考 http://stevenloria.com/finding-important-words-in-a-document-using-tf-idf/，实现了能运行的 tf-idf。
+
