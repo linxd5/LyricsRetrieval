@@ -30,22 +30,18 @@ def tfidf_all(bloblist):
     return all_scores
 
 
+if __name__ == "__main__":
+    document1 = tb("""我 来到 北京 清华大学""")
+    document2 = tb("""他 来到 了 网易 杭研 大厦""")
+    document3 = tb("""小明 硕士 毕业 与 中国 科学院""")
+    document4 = tb("""我 爱 北京 天安门""")
+
+    bloblist = [document1, document2, document3, document4]
 
 
-document1 = tb("""我 来到 北京 清华大学""")
-
-document2 = tb("""他 来到 了 网易 杭研 大厦""")
-
-document3 = tb("""小明 硕士 毕业 与 中国 科学院""")
-
-document4 = tb("""我 爱 北京 天安门""")
-
-bloblist = [document1, document2, document3, document4]
-
-
-all_scores = tfidf_all(bloblist)
-for i, scores in enumerate(all_scores):
-    print("\n********* document", i)
-    for (word, score) in scores.items():
-        print("\tWord: {}, TF-IDF: {}".format(word, round(score, 5)))
+    all_scores = tfidf_all(bloblist)
+    for i, scores in enumerate(all_scores):
+        print("\n********* document", i)
+        for (word, score) in scores.items():
+            print("\tWord: {}, TF-IDF: {}".format(word, round(score, 5)))
 
