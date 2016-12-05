@@ -21,5 +21,5 @@
 - 配置[虚拟环境](http://docs.python-guide.org/en/latest/dev/virtualenvs/)，通过子目录下的 `.gitignore` 将虚拟环境文件设置为[不上传](http://blog.csdn.net/nyist327/article/details/39207383)。
 
 #### 2016 年12月3日
-参考 http://stevenloria.com/finding-important-words-in-a-document-using-tf-idf/，实现了能运行的 tf-idf。
+- 参考 http://stevenloria.com/finding-important-words-in-a-document-using-tf-idf/，实现了能运行的 tf-idf。
 
