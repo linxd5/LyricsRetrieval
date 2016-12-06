@@ -5,6 +5,10 @@ import gensim
 import json
 import numpy as np
 
+# 输入是歌词的 tfidf 文件
+# 输出是歌词的向量表示
+
+
 def wrd2vec(file):
     write_file = file + '_wrd2vec' 
     temp_num = 0
@@ -16,6 +20,7 @@ def wrd2vec(file):
             for line in f_read:
                 temp = json.loads(line, "utf-8")
                 id, lyrics_tfidf = temp['id'], temp['lyrics_tfidf']
+
                 lyrics_vec, temp_dict = np.zeros(60), {}
                 for (key, value) in lyrics_tfidf.items():
                     if key in model:

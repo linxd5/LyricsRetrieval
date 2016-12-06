@@ -20,14 +20,15 @@ def tfidf_gensim(file):
             # if temp_num > 1000:
                 # break
     
-    
-    
+    # 得到语料库的词典
     dictionary = corpora.Dictionary(texts)
     dictionary.save('/tmp/lyrics.dict')
 
+    # 得到语料库的向量表示
     corpus = [dictionary.doc2bow(text) for text in texts]
     corpora.MmCorpus.serialize('/tmp/lyrics.mm', corpus)
     
+    # 对语料库进行 tfidf 计算
     tfidf = models.TfidfModel(corpus)
     corpus_tfidf = tfidf[corpus]
 

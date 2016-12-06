@@ -26,6 +26,13 @@
 
 ### 2016年12月6日
 
+如何高效地得到最相似的 K 首歌？ 
+
+- gensim.MatrixSimilarity 好是好，但我的数据不知道怎么放进去。
+- sklearn.neighbors.NearestNeighbors 好像不符合我的需求？
+- 目前使用的是 spatial.distance.cosine 计算两个向量的相似度，然后进行排序并返回前 k 个结果。
+
+
 - preprocess_json.py 是使用 json 对数据进行清洗的程序； preprocess_re.py 是使用正则表达式对数据进行清洗的程序；
 
 - 使用 gensim tfidf 能够高效地统计 TF-IDF (`tfidf_gensim.py`)。 gensim tfidf 的文档，教你如何使用 LSA 来得到两篇文档的相似度并返回最相似的 k 篇文档：
