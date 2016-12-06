@@ -50,7 +50,7 @@ python str 和 unicode 的[最佳实践](http://blog.ernest.me/post/python-setde
 
 
 
-#### 数据清洗专题报告
+### 数据清洗专题报告
 
 需要明确的一点是：`中文和英文没有相似的概念`，因为训练文本极少是中英文混合的。具体的代码如下：
 ```python
@@ -78,11 +78,11 @@ python str 和 unicode 的[最佳实践](http://blog.ernest.me/post/python-setde
 后面的做法很简单粗暴：`直接把歌曲中不是[中文的字符](https://www.zhukun.net/archives/6397)置换为空格`，然后效果奇好。
 
 
-#### 2016年12月5日
+### 2016年12月5日
 - 将 tf-idf 改造成可供调用的函数
 - 配置[虚拟环境](http://docs.python-guide.org/en/latest/dev/virtualenvs/)，通过子目录下的 `.gitignore` 将虚拟环境文件设置为[不上传](http://blog.csdn.net/nyist327/article/details/39207383)。
 - 完成 jieba_seg.py 和 wrt2vec.py
 
-#### 2016 年12月3日
+### 2016 年12月3日
 - 参考 http://stevenloria.com/finding-important-words-in-a-document-using-tf-idf/ ，实现了能运行的 tf-idf。
 
