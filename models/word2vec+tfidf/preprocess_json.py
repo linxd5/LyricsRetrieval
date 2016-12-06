@@ -1,10 +1,10 @@
+#!/usr/bin/env python
+# coding=utf-8
 
 # 输入数据文件的路径和名字
 # 输出处理后的文件
 
-
 import re, json
-
 
 def preprocess(file):
     write_file = file + '_processed'
@@ -22,6 +22,7 @@ def preprocess(file):
                     lyrics = re.sub('\s+', ' ', lyrics)
                     if len(re.sub(u' ', u'', lyrics)) > 30:
                         temp_dict['id'], temp_dict['lyrics'] = id, lyrics
+                        # 向文件中写入中文，而不是 Unicode  
                         temp_dict = json.dumps(temp_dict, ensure_ascii=False)
                         f_write.write(temp_dict + '\n')
                     temp_num += 1
@@ -31,7 +32,10 @@ if __name__ == '__main__':
     file = 'lyrics.json'
     preprocess(file)
 
+    # 这段代码演示了如何读入处理后的数据
+    """
     with open('lyrics.json_processed') as file:
         for line in file:
             temp = json.loads(line, 'utf-8')
             print(temp['id'], '   ', temp['lyrics'])
+    """
