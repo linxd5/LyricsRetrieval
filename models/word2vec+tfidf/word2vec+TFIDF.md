@@ -20,9 +20,27 @@
 
 #### 字符串编码专题
 
+python json.loads() 和 json.dumps() 函数是正常执行的。但是中间的正则匹配除了问题，初步怀疑是 json.loads() 装载数据时字符串编码出了问题。
+
 json.[loads](https://docs.python.org/2/library/json.html)(s, [encoding]) 官方文档里面提到：
 
 > If s is a str instance and is encoded with an ASCII based encoding other than UTF-8 (e.g. latin-1), then an appropriate encoding name must be specified. Encodings that are not ASCII based (such as UCS-2) are not allowed and should be decoded to unicode first.
+
+
+于是尝试判断一下装载进来的 lyrics 是什么[编码格式](http://stackoverflow.com/questions/4987327/how-do-i-check-if-a-string-is-unicode-or-ascii)？
+
+```python
+def whatisthis(s):
+    if isinstance(s, str):
+        print "ordinary string"
+    elif isinstance(s, unicode):
+        print "unicode string"
+    else:
+        print "not a string"
+```
+
+输出的结果显示 lyrics 是 ordinary string。因此在 json.loads 里面加入 'utf-8' encoding，完美解决！
+
 
 python json 处理数据的部分没有写好，字符编码部分出了问题！
 
