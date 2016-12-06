@@ -18,6 +18,12 @@
 
 #### 2016年12月6日
 
+#### 字符串编码专题
+
+json.[loads](https://docs.python.org/2/library/json.html)(s, [encoding]) 官方文档里面提到：
+
+> If s is a str instance and is encoded with an ASCII based encoding other than UTF-8 (e.g. latin-1), then an appropriate encoding name must be specified. Encodings that are not ASCII based (such as UCS-2) are not allowed and should be decoded to unicode first.
+
 python json 处理数据的部分没有写好，字符编码部分出了问题！
 
 #### 数据清洗专题报告
