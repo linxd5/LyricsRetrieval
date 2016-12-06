@@ -50,8 +50,18 @@ python str 和 unicode 的[最佳实践](http://blog.ernest.me/post/python-setde
 - 所有 text string 都应该是 unicode 类型，而不是 str，如果你在操作 text，而类型却是 str，那就是在制造 bug。
 
 
-让 python 的 json.dumps 输出中文
-python 的 json.dumps 方法默认会输出成这种格式
+[让 python 的 json.dumps 输出中文](http://outofmemory.cn/code-snippet/4092/python-json-charset-type)：
+
+python 的 json.dumps 方法默认会输出成这种格式 `"\u535a\u5ba2\u56ed"`。要输出中文需要指定 ensure_ascii 参数为 False，如下代码片段：
+```python
+json.dumps({'text': "中文"}, ensure_ascii=False)
+```
+
+需要注意的是，每次向文件中写入一首处理好的歌词的时候，要在末尾加上空格，以方便后面的处理，代码如下：
+```python
+temp_dict = json.dumps(temp_dict, ensure_ascii=False)
+f_write.write(temp_dict + '\n')
+```
 
 
 
