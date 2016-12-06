@@ -77,30 +77,28 @@ w2v = models.Word2Vec.load('Chinese_Word2Vec/Word60.model')
 # 计算语料的 tfidf
 tfidf = models.TfidfModel(corpus)
 
+# 取出语料的 wrd2vec
+lyrics_vec = []
+with open('lyrics_big.json_processed_jieba_tfidf_wrd2vec') as f_read:
+    for line in f_read:
+        lyrics_vec.append(json.loads(line))
+        
+
 begin_time = time.time()
 
 # 对查询歌词建立字典
 vec_bow = dictionary.doc2bow(doc)
 
-doc_vec = np.zeros(60)
-
 # 计算查询歌词的向量
+doc_vec = np.zeros(60)
 for word in tfidf[vec_bow]:
     if dictionary[word[0]] in w2v:
         doc_vec += word[1] * w2v[dictionary[word[0]]]
 
-lyrics_vec = []
-
-with open('lyrics.json_processed_jieba_tfidf_wrd2vec') as f_read:
-    for line in f_read:
-        lyrics_vec.append(json.loads(line))
-        
-lyrics_sim = {}
-
-
 # 计算相似度并对结果进行排序
+lyrics_sim = {}
 for item in lyrics_vec:
-    lyrics_sim[item['id']] = 1-spatial.distance.cosine(doc_vec, item['lyrics_vec'])
+    lyrics_sim[item['id']] = 1.0-spatial.distance.cosine(doc_vec, item['lyrics_vec'])
 
 sorted_array2 = sorted(lyrics_sim.items(), key=operator.itemgetter(1), reverse=True)
 

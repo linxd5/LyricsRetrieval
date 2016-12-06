@@ -33,7 +33,8 @@ def wrd2vec(file):
                 f_write.write(temp_dict + '\n')
 
                 temp_num += 1
-                print('++++ Processing song: ', temp_num)
+                if temp_num % 10000 == 0:
+                    print('++++ Processing song: ', temp_num)
     return write_file
 
 
