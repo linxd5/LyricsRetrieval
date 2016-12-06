@@ -35,7 +35,7 @@ def tfidf_all(file):
                 temp_num += 1
                 print('++++ Concatenating song:', temp_num)
 
-                if temp_num > 1000:
+                if temp_num > 10000:
                     break
 
             for i, blob in enumerate(bloblist):

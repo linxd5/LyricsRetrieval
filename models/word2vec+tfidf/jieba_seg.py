@@ -25,7 +25,7 @@ def jieba_seg(file):
 
                 temp_num += 1
                 print('+++ Processing song', temp_num)
-    return seg_list
+    return write_file
 
 if __name__ == "__main__":
 

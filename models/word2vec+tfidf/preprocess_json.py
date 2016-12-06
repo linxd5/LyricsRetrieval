@@ -27,6 +27,7 @@ def preprocess(file):
                         f_write.write(temp_dict + '\n')
                     temp_num += 1
                     print('+++ Processing song', temp_num)
+    return write_file
                     
 if __name__ == '__main__':
     file = 'lyrics.json'
