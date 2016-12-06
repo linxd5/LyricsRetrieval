@@ -1,54 +1,29 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-from jieba_seg import jieba_seg
 import gensim
+import json
+import numpy as np
 
+def wrd2vec(file):
+    write_file = file + '_wrd2vec' 
+    
+    model = gensim.models.Word2Vec.load('Chinese_Word2Vec/Word60.model')
 
-doc= """素胚勾勒出青花笔锋浓转淡
-瓶身描绘的牡丹一如你初妆
-冉冉檀香透过窗心事我了然
-宣纸上走笔至此搁一半
-釉色渲染仕女图韵味被私藏
-而你嫣然的一笑如含苞待放
-你的美一缕飘散
-去到我去不了的地方
+    with open(file) as f_read:
+        with open(write_file, 'w') as f_write:
+            for line in f_read:
+                temp = json.loads(line, 'utf-8')
+                id, lyrics_tfidf = temp['id'], temp['lyrics_tfidf']
+                lyrics_vec, temp_dict = np.zeros(60), {}
+                for (key, value) in lyrics_tfidf.items():
+                    if key in model:
+                        lyrics_vec += lyrics_tfidf[key] * model[key]
 
-天青色等烟雨
-而我在等你
-炊烟袅袅升起
-隔江千万里
-在瓶底书汉隶仿前朝的飘逸
-就当我为遇见你伏笔
-天青色等烟雨
-而我在等你
-月色被打捞起
-晕开了结局
-如传世的青花瓷自顾自美丽
-你眼带笑意
-色白花青的锦鲤跃然於碗底
-临摹宋体落款时却惦记着你
-你隐藏在窑烧里千年的秘密
-极细腻犹如绣花针落地
-帘外芭蕉惹骤雨
-门环惹铜绿
-而我路过那江南小镇惹了你
-在泼墨山水画里
-你从墨色深处被隐去"""
+                temp_dict['id'], temp_dict['lyrics_vec'] = id, lyrics_vec
+                temp_dict = json.dumps(temp_dict, ensure_ascii=False)
+                f_write.write(temp_dict + '\n')
 
-seg_list = jieba_seg(doc)
-print("Default Mode:" + " ".join(seg_list))
-
-
-model = gensim.models.Word2Vec.load('Chinese_Word2Vec/Word60.model')
-
-for word in seg_list:
-    # 换行符的特殊处理
-    print("word:", word)
-    if (word == '\n'):
-        print('change line occur')
-    try:
-        print(model[word], '\n')
-    except KeyError:
-        pass
-
+if __name__ == '__main__':
+    file = 'lyrics.json_processed_jieba_tfidf_small'
+    wrd2vec(file)

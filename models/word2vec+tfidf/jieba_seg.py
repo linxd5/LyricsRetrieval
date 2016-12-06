@@ -1,47 +1,41 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# 输入一篇中文文档
-# 输出该中文文档的分词结果,并保存在文件中
+# 输入处理后的中文歌词文件
+# 输出中文歌词的分词结果,并保存在文件中
 
 import jieba
+import json
 
-def jieba_seg(doc):
-    seg_list = jieba.lcut(doc, cut_all=False)
+def jieba_seg(file):
+    write_file = file + '_jieba'
+    temp_num = 0
+
+    with open(file) as f_read:
+        with open(write_file, 'w') as f_write:
+            for line in f_read:
+                # 得到歌词和id
+                temp = json.loads(line, 'utf-8')
+                id, lyrics, temp_dict = temp['id'], temp['lyrics'], {}
+                seg_list = jieba.lcut(lyrics, cut_all=False)
+                temp_dict['id'], temp_dict['lyrics_jieba'] = id, seg_list
+                # 向文件中写入中文，而不是 Unicode
+                temp_dict = json.dumps(temp_dict, ensure_ascii=False)
+                f_write.write(temp_dict + '\n')
+
+                temp_num += 1
+                print('+++ Processing song', temp_num)
     return seg_list
 
 if __name__ == "__main__":
-    doc = """素胚勾勒出青花笔锋浓转淡
-    瓶身描绘的牡丹一如你初妆
-    冉冉檀香透过窗心事我了然
-    宣纸上走笔至此搁一半
-    釉色渲染仕女图韵味被私藏
-    而你嫣然的一笑如含苞待放
-    你的美一缕飘散
-    去到我去不了的地方
-    
-    天青色等烟雨
-    而我在等你
-    炊烟袅袅升起
-    隔江千万里
-    在瓶底书汉隶仿前朝的飘逸
-    就当我为遇见你伏笔
-    天青色等烟雨
-    而我在等你
-    月色被打捞起
-    晕开了结局
-    如传世的青花瓷自顾自美丽
-    你眼带笑意
-    色白花青的锦鲤跃然於碗底
-    临摹宋体落款时却惦记着你
-    你隐藏在窑烧里千年的秘密
-    极细腻犹如绣花针落地
-    帘外芭蕉惹骤雨
-    门环惹铜绿
-    而我路过那江南小镇惹了你
-    在泼墨山水画里
-    你从墨色深处被隐去"""
 
+    file = 'lyrics.json_processed'
+    jieba_seg(file)
 
-    seg_list = jieba_seg(doc)
-    print("Default Mode:" + " ".join(seg_list))
+    # 测试代码
+    """
+    with open('lyrics.json_processed_jieba') as file:
+        for line in file:
+            temp = json.loads(line, 'utf-8')
+            print(temp['id'], temp['lyrics_jieba'])
+    """
