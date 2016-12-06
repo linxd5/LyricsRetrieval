@@ -41,8 +41,14 @@ def whatisthis(s):
 
 输出的结果显示 lyrics 是 ordinary string。因此在 json.loads 里面加入 'utf-8' encoding，完美解决！
 
+python str 和 unicode 的[最佳实践](http://blog.ernest.me/post/python-setdefaultencoding-unicode-bytes)：
 
-python json 处理数据的部分没有写好，字符编码部分出了问题！
+- 使用 python3。python2 默认的编码方式是 ASCII，因此会存在编解码的问题； python3 默认的编码方式是 Unicode，不存在编解码的问题。
+
+- 所有 text string 都应该是 unicode 类型，而不是 str，如果你在操作 text，而类型却是 str，那就是在制造 bug。
+
+
+
 
 #### 数据清洗专题报告
 
