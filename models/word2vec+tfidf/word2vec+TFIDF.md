@@ -1,3 +1,5 @@
+[toc]
+
 ## 1. 模型训练过程
 
 - 对网易云音乐的数据进行清洗，去除掉与歌词无关的东西。
@@ -46,6 +48,10 @@ python str 和 unicode 的[最佳实践](http://blog.ernest.me/post/python-setde
 - 使用 python3。python2 默认的编码方式是 ASCII，因此会存在编解码的问题； python3 默认的编码方式是 Unicode，不存在编解码的问题。
 
 - 所有 text string 都应该是 unicode 类型，而不是 str，如果你在操作 text，而类型却是 str，那就是在制造 bug。
+
+
+让 python 的 json.dumps 输出中文
+python 的 json.dumps 方法默认会输出成这种格式
 
 
 
