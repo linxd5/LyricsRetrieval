@@ -17,18 +17,21 @@ from sklearn.neighbors import NearestNeighbors
 
 ### 模型预加载
 
-processed_wrd2vec = '../lyrics_all.json_processed_jieba_tfidf_wrd2vec'
-processed_data = '../lyrics_all.json_processed'
+processed_wrd2vec = 'processed_data/lyrics_all.json_processed_jieba_tfidf_wrd2vec'
+processed_data = 'processed_data/lyrics_all.json_processed'
+corpus_data = 'processed_data/lyrics.mm'
+dictionary_data = 'processed_data/lyrics.dict'
+Chinese_Word2Vec_data = '../Chinese_Word2Vec/Word60.model'
 
 # 预建立 k_max 的搜索树，根据用户输入再返回 k_input(< k_max) 篇相似文档
 k_max, k_input = 100, 5
 
 # 载入语料词典
-dictionary = corpora.Dictionary.load('/tmp/lyrics.dict')
+dictionary = corpora.Dictionary.load(dictionary_data)
 # 载入语料向量
-corpus = corpora.MmCorpus('/tmp/lyrics.mm')
+corpus = corpora.MmCorpus(corpus_data)
 
-w2v = models.Word2Vec.load('../Chinese_Word2Vec/Word60.model')
+w2v = models.Word2Vec.load(Chinese_Word2Vec_data)
 
 # 计算语料的 tfidf
 tfidf = models.TfidfModel(corpus)

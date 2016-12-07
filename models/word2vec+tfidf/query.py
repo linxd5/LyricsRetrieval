@@ -10,17 +10,20 @@ from sklearn.neighbors import NearestNeighbors
 # 输入是查询歌词文档和 k 值
 # 输出是最相似的 k 篇歌词文档的 id 
 
-processed_wrd2vec = 'lyrics_all.json_processed_jieba_tfidf_wrd2vec'
-processed_data = 'lyrics_all.json_processed'
+processed_wrd2vec = 'processed_data/lyrics_all.json_processed_jieba_tfidf_wrd2vec'
+processed_data = 'processed_data/lyrics_all.json_processed'
+corpus_data = 'processed_data/lyrics.mm'
+dictionary_data = 'processed_data/lyrics.dict'
+Chinese_Word2Vec_data = 'Chinese_Word2Vec/Word60.model'
 
 def query(doc, k):
 
     # 载入语料词典
-    dictionary = corpora.Dictionary.load('/tmp/lyrics.dict')
+    dictionary = corpora.Dictionary.load(dictionary_data)
     # 载入语料向量
-    corpus = corpora.MmCorpus('/tmp/lyrics.mm')
+    corpus = corpora.MmCorpus(corpus_data)
 
-    w2v = models.Word2Vec.load('Chinese_Word2Vec/Word60.model')
+    w2v = models.Word2Vec.load(Chinese_Word2Vec_data)
 
     # 计算语料的 tfidf
     tfidf = models.TfidfModel(corpus)
