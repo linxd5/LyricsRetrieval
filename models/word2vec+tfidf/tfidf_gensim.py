@@ -22,11 +22,11 @@ def tfidf_gensim(file):
     
     # 得到语料库的词典
     dictionary = corpora.Dictionary(texts)
-    dictionary.save('./lyrics.dict')
+    dictionary.save('processed_data/lyrics.dict')
 
     # 得到语料库的向量表示
     corpus = [dictionary.doc2bow(text) for text in texts]
-    corpora.MmCorpus.serialize('./lyrics.mm', corpus)
+    corpora.MmCorpus.serialize('processed_data/lyrics.mm', corpus)
     
     # 对语料库进行 tfidf 计算
     tfidf = models.TfidfModel(corpus)

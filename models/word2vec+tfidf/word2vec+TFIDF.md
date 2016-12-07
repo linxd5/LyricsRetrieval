@@ -7,11 +7,13 @@
 
 - python3 ~~ (ln -s /usr/bin/python3.4 /usr/bin/python，会导致 Ubuntu 14.04 系统安装软件异常)~~  `virtualenv -p /usr/bin/python3.4 venv `
 
-- 其余的根据提示 pip install 就可以了。
+- pip install jieba gensim flask sklearn
 
 ### 0.1 如何运行代码
 
-进入 python3 虚拟环境：
+
+
+通过 git pull 得到最新的代码，进入 python3 虚拟环境：
 
 - `python train.py` 将在原数据文件目录下依次产生清洗后的数据文件 *_processed、jieba 分词文件 *_processed_jieba、统计 TF-IDF 文件 *_processed_jieba_tfidf、词向量文件 *_processed_jieba_tfidf_wrd2vec。同时将在 /tmp 目录中产生语料词典 lyrics.dict 、语料向量 lyrics.mm 以及 lyrics.mm.index 文件。
 
