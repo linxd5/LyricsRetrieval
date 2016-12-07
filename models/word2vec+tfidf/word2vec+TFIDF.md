@@ -3,28 +3,60 @@
 
 ## 0. 运行环境
 
+- Ubuntu 14.04
+
 - python3 ~~ (ln -s /usr/bin/python3.4 /usr/bin/python，会导致 Ubuntu 14.04 系统安装软件异常)~~  `virtualenv -p /usr/bin/python3.4 venv `
+
+- 其余的根据提示 pip install 就可以了。
+
+### 0.1 如何运行代码
+
+进入 python3 虚拟环境：
+
+- `python train.py` 将在原数据文件目录下依次产生清洗后的数据文件 *_processed、jieba 分词文件 *_processed_jieba、统计 TF-IDF 文件 *_processed_jieba_tfidf、词向量文件 *_processed_jieba_tfidf_wrd2vec。同时将在 /tmp 目录中产生语料词典 lyrics.dict 、语料向量 lyrics.mm 以及 lyrics.mm.index 文件。
+
+- 进行 web 目录下，运行 `python server`，待模型加载完后，就可以接受用户的歌词查询了。
 
 
 ## 1. 模型训练过程
 
-- 对网易云音乐的数据进行清洗，去除掉与歌词无关的东西。(`preprocess_json.py`)
-- 对处理好后的数据进行 jieba 分词，保存分词后的歌词 (`jieba_seg.py`)。
-- 使用分词后的歌词，统计 TF-IDF。(`tf-idf.py`)
+- 对网易云音乐的数据进行清洗，去除掉与歌词无关的东西。这里使用正则表达式把非中文歌词替换为空格。数据的读取和写出使用 python json 函数，读入时以 utf-8 编码读入，写出时转换为中文编码。以下步骤的文件读写是类似的，就不再赘述了。 (`preprocess_json.py`)
+
+- 对处理好后的数据进行 jieba 分词（精确模式），保存分词后的歌词 (`jieba_seg.py`)。
+
+- 使用分词后的歌词，统计 TF-IDF。这里使用了  gensim 的库来对语料建立词典和向量，保存相应的文件以备查询时用。同时使用库计算了  TF-IDF。 (`tf-idf.py`)
+
 - 对于每一首歌，得到每一个分词的词向量。组合该分词的 TF-IDF，得到整篇歌词的向量表示(`wrt2vec.py`)。
 
 
 ## 2. 模型预测过程
 
-- 从前端的文本框中获取歌词
-- 计算查询歌词的 TF-IDF，组合得到查询歌词的向量表示。
-- 与库中的每一首歌做相似度对比，得到推荐歌词。
-- 向前端返回推荐歌词。
+- 从前端的文本框中获取歌词，涉及到 $.ajax 以及数据的序列化 (serialize)，详见 /web/static/index.js
+
+- 计算查询歌词的 TF-IDF，组合得到查询歌词的向量表示，然后与库中的每一首歌词向量做相似度对比，得到推荐歌词，并前端返回推荐歌词。这里把预加载模型写在外部代码中，这样就不用每来一个查询都要加载模型。然后把查询代码写在路由 /query 中，并使用 python.jsonify 向前端返回结果。这里计算相似度的时候使用了 sklearn.neighbors.NearestNeightbors 函数，参数算法采用 'brute'，这是实测的跑得最快又准确的参数算法。详见 /web/server.py
 
 
 ## 3. 进度报告
 
+### 测试报告
+
+- 热门的歌曲返回的大多都是同一首歌，这时候需要加大 k_input，才能看到其它歌曲。
+
+- 搜索中山大学校歌歌词，可以得到其它学校的校歌歌词。
+
+- 接下来是对整个项目进行深入的总结和整理，同时做 ppt 。
+
+### flask 专题 (Demo 模板)
+
+- 把任务划分成独立的子任务 (清洗，分词，TF-IDF，词向量)。把测试划分成尽可能小、完备、快速 (ipython notebook) 的测试 (正则，flask外部访问)！！！
+
+- 修改 app.run() 为 app.run(host='0.0.0.0', port=2333)，可以实现从外部访问网站，端口设置为附加功能。这里要注意关掉浏览器代理！！
+
+- 访问网站 / 的时候，会返回 index.html；在 index.html 上点击按钮时，会向 /query 发送查询歌词数据；后台在处理完后向前端返回相似歌词数据 (jsonify)；前端得到数据后进行相应的更新。[使用 jsonify 的好处](http://stackoverflow.com/questions/7907596/json-dumps-vs-flask-jsonify)是它会自动在响应中加入头部。
+
 ### 2016年12月7日
+
+- 详细的更新了本文档，优化了前端代码，并把项目部署到 titan 中，实现外网访问。
 
 - 网站也基本搭好了，剩下就是布局和样式了！
 

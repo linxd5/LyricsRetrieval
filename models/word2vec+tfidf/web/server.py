@@ -56,6 +56,7 @@ nbrs = NearestNeighbors(n_neighbors=k_max, algorithm='brute').fit(lyrics_vec)
 @app.route('/query', methods=['POST'])
 def query():
 
+    k_input = int(request.form.get('k_input', ''))
     query_lyric = request.form.get('query_lyric', '')
 
     # 对查询歌词进行清洗和分词
@@ -94,4 +95,4 @@ def index():
     return render_template('index.html')
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0', port=2333)
