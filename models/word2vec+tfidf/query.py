@@ -15,10 +15,6 @@ processed_data = 'lyrics_all.json_processed'
 
 def query(doc, k):
 
-    # 对文本进行清洗和分词
-    doc = re.sub(u'[^\u4e00-\u9fa5]', u' ', doc)
-    doc = jieba.lcut(doc, cut_all=False)
-
     # 载入语料词典
     dictionary = corpora.Dictionary.load('/tmp/lyrics.dict')
     # 载入语料向量
@@ -53,6 +49,11 @@ def query(doc, k):
     ### 以上部分都是可以预加载的
 
     begin_time = time.time()
+
+    # 对查询歌词进行清洗和分词
+    doc = re.sub(u'[^\u4e00-\u9fa5]', u' ', doc)
+    doc = jieba.lcut(doc, cut_all=False)
+
 
     # 对查询歌词建立字典
     vec_bow = dictionary.doc2bow(doc)
