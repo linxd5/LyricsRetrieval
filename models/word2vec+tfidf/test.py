@@ -8,7 +8,7 @@ from wrd2vec import wrd2vec
 import time
 
 if __name__ == '__main__':
-    file = 'lyrics_big.json'
+    file = 'lyrics_all.json'
 
     begin_time = time.time()
 

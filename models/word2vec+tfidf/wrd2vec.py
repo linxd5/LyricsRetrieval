@@ -39,5 +39,5 @@ def wrd2vec(file):
 
 
 if __name__ == '__main__':
-    file = 'lyrics.json_processed_jieba_tfidf'
+    file = 'lyrics_big.json_processed_jieba_tfidf'
     wrd2vec(file)

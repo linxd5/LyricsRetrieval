@@ -6,3 +6,4 @@ Chinese_Word2Vec/
 lyrics*
 *.ipynb
 *.py~
+backup_data/
