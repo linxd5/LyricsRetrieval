@@ -3,7 +3,7 @@
 
 ## 0. 运行环境
 
-- python3 (`ln -s /usr/bin/python3.4 /usr/bin/python`)
+- python3 ~~ (ln -s /usr/bin/python3.4 /usr/bin/python，会导致 Ubuntu 14.04 系统安装软件异常)~~  `virtualenv -p /usr/bin/python3.4 venv `
 
 
 ## 1. 模型训练过程
