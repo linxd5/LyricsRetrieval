@@ -2,7 +2,7 @@
 
 $(function(){
 	$('#query_button').click(function(){
-    
+
 		$.ajax({
 			url: '/query',
 			data: $('form').serialize(),

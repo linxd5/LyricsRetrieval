@@ -7,4 +7,4 @@ lyrics*
 *.ipynb
 *.py~
 backup_data/
-web/.idea/
+web/.idea/*

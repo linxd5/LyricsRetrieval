@@ -7,7 +7,9 @@
 
 - python3 ~~ (ln -s /usr/bin/python3.4 /usr/bin/python，会导致 Ubuntu 14.04 系统安装软件异常)~~  `virtualenv -p /usr/bin/python3.4 venv `
 
-- pip install jieba gensim flask sklearn
+- pip install jieba numpy gensim flask sklearn
+
+- 在海外服务器上部署时，还需要 sudo apt-get update && sudo apt-get dist-upgrade。海外服务器只有 500m 的内存，不支持训练！
 
 ### 0.1 如何运行代码
 
