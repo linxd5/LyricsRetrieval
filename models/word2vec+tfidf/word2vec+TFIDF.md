@@ -7,13 +7,15 @@
 
 - python3 ~~ (ln -s /usr/bin/python3.4 /usr/bin/python，会导致 Ubuntu 14.04 系统安装软件异常)~~  `virtualenv -p /usr/bin/python3.4 venv `
 
-- pip install jieba numpy gensim flask sklearn
+- sudo apt-get install subversion
 
-- 在海外服务器上部署时，还需要 sudo apt-get update && sudo apt-get dist-upgrade。海外服务器只有 500m 的内存，不支持训练！
+- pip install jieba numpy gensim flask sklearn (建议一个一个顺序安装)
+
+- 与项目相关的数据文件放在的[百度云盘](https://pan.baidu.com/s/1hsgEc08)。
+
+- 在海外服务器上部署时，还需要 sudo apt-get update && sudo apt-get dist-upgrade。海外服务器只有 500m 的内存，不支持训练和部署。。。。
 
 ### 0.1 如何运行代码
-
-
 
 通过 git pull 得到最新的代码，进入 python3 虚拟环境：
 
@@ -33,6 +35,14 @@ tian 程序常驻后台，通过 172.18.217.250:2333 即可访问网站
 - 使用分词后的歌词，统计 TF-IDF。这里使用了  gensim 的库来对语料建立词典和向量，保存相应的文件以备查询时用。同时使用库计算了  TF-IDF。 (`tf-idf.py`)
 
 - 对于每一首歌，得到每一个分词的词向量。组合该分词的 TF-IDF，得到整篇歌词的向量表示(`wrt2vec.py`)。
+
+### 1.1 结巴分词深入理解
+
+关于结巴分词的理解可以参考 [系列文档一](http://www.cnblogs.com/zhbzz2007/p/6076246.html)、[系列文档二](http://www.cnblogs.com/baiboy/p/jieba1.html)。
+
+结巴分词使用了`前缀词典`来预加载语料词典，里面有每个词语以及它们出现的频数。对于待分词的句子，根据前缀词典生成所有可能成词情况所构成的`有向无环图`。有向无环图中有很多条分词路径，采用`动态规划`来查找基于词频的最大概率路径。对于未登录词，采用基于汉字成词能力的 `HMM 模型`，使用了 Viterbi 算法。
+
+结巴分词的核心代码只有大概 1000 行，如果有时间的话一定要拜读一下！！！
 
 
 ## 2. 模型预测过程
