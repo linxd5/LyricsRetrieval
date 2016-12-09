@@ -1,0 +1,10 @@
+# 忽略虚拟环境、缓冲文件、pyc文件、中文词向量模型、数据文件
+venv/
+__pycache__/
+*.pyc
+Chinese_Word2Vec/
+lyrics*
+*.ipynb
+*.py~
+backup_data/
+web/.idea/*

@@ -1,0 +1,51 @@
+div.header h3.text-muted {
+    text-align: center;
+}
+
+@media (min-width: 768px) {
+    .container {
+        /*覆盖原来的样式*/
+        max-width: 10000px;
+    }
+}
+
+div.container {
+    width: 90%;
+}
+
+div.jumbotron {
+    overflow: auto;
+}
+
+div.jumbotron form.query {
+    float: left;
+    width: 300px;
+}
+
+form.query input {
+    width: 20%;
+    float: left;
+    line-height: 1.33333333;
+    padding: 4px 4px 4px 10px;
+    margin: 4px 10px 0 0;
+    font-size: 21px;
+}
+
+form.query button {
+    width: 60%;
+    float: right;
+    margin-left: 10px;
+}
+
+form.query textarea#query_lyric {
+    width: 100%;
+    padding: 10px;
+}
+
+div.jumbotron div#lyrics_container {
+    width: 60%;
+    float: left;
+    margin: 0 50px 50px 50px;
+    padding: 10px;
+    border: 1px solid rgb(169, 169, 169);
+}
