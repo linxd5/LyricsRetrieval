@@ -29,7 +29,7 @@ def tfidf_gensim(file):
     corpora.MmCorpus.serialize('processed_data/lyrics.mm', corpus)
     
     # 对语料库进行 tfidf 计算
-    tfidf = models.TfidfModel(corpus)
+    tfidf = models.TfidfModel(corpus, normalize=True)
     corpus_tfidf = tfidf[corpus]
 
     temp_num, write_file = 0, file+'_tfidf'
@@ -51,6 +51,6 @@ def tfidf_gensim(file):
     return write_file
 
 if __name__ == "__main__":
-    file = 'lyrics.json_processed_jieba'
+    file = 'processed_data/lyrics_all.json_processed_jieba'
     tfidf_gensim(file)
 

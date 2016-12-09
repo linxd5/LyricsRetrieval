@@ -10,6 +10,9 @@ from gensim import corpora, models
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 
+import requests
+
+
 
 # 输入是查询歌词文档和 k_input 值
 # 输出是最相似的 k_input 篇歌词文档的 id 
@@ -24,7 +27,7 @@ dictionary_data = '../processed_data/lyrics.dict'
 Chinese_Word2Vec_data = '../Chinese_Word2Vec/Word60.model'
 
 # 预建立 k_max 的搜索树，根据用户输入再返回 k_input(< k_max) 篇相似文档
-k_max, k_input = 100, 5
+k_max, k_input = 260000, 5
 
 # 载入语料词典
 dictionary = corpora.Dictionary.load(dictionary_data)
@@ -80,6 +83,9 @@ def query():
     distance, indices = nbrs.kneighbors(query_lyric_vec)
 
     # 只返回最相似的 k_input 个 id，id 需要映射一下
+
+    print("+++ Distance max: ", max(distance[0]))
+    print("+++ Distance min: ", min(distance[0]))
  
     
     result_ids = []
@@ -91,7 +97,21 @@ def query():
     for id in result_ids:
         sim_lyrics.append((id, lyrics_Chinese[id]))
 
-    return jsonify(sim_lyrics=sim_lyrics)
+    songs_info = []
+    # 通过 id 爬取歌曲相关信息
+    for songid in result_ids:
+        songid = int(songid)
+        url = u"http://music.163.com/api/song/detail/?id=%d&ids=%%5B%d%%5D" %(songid,songid)
+        response = requests.get(url)
+        response = json.loads(response.content.decode('utf8'))['songs'][0]
+        song_info = {}
+        song_info['artists'] = [artists['name'] for artists in response['artists']]
+        song_info['popularity'] = response['popularity']
+        song_info['name'] = response['name']
+        song_info['picUrl'] = response['album']['picUrl']
+        songs_info.append(song_info)
+
+    return jsonify(sim_lyrics=sim_lyrics, songs_info=songs_info)
 
 @app.route('/')
 def index():

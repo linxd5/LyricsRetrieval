@@ -44,9 +44,30 @@ form.query textarea#query_lyric {
     padding: 10px;
 }
 
-div.jumbotron div#lyrics_container {
+div.jumbotron div#songs_container {
     width: 60%;
     float: left;
     padding: 10px;
     border: 1px solid rgb(169, 169, 169);
 }
+
+div#songs_container div.song_container {
+    overflow: auto;
+    margin-bottom: 20px;
+    min-height: 250px;
+}
+
+div.song_container div.img_container {
+    float: left;
+    margin: 20px 40px 0 40px;
+}
+
+div.song_container div.lyric_container {
+    width: 70%;
+    float: left;
+}
+
+div.img_container img {
+    border-radius: 100px;
+}
+

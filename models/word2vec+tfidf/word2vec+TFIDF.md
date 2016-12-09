@@ -25,6 +25,9 @@
 
 tian 程序常驻后台，通过 172.18.217.250:2333 即可访问网站
 
+后台运行程序：`setsid python server.py 2>&1 ~/db_project.log`
+关闭后台程序：`ps -aux | grep server.py`，找到进程 ID 并 kill -9 。
+
 
 ## 1. 模型训练过程
 
@@ -47,18 +50,75 @@ tian 程序常驻后台，通过 172.18.217.250:2333 即可访问网站
 
 ### 1.2 gensim TF-IDF 深入理解
 
+使用 [A guide to analyzing Python performance](https://www.huyng.com/posts/python-performance-analysis) 来测量如下代码的内存占用：
+```python 
+#!/usr/bin/env python
+# coding=utf-8
+
+# 输入是分词后的文档（使用空格作为分隔符）
+# 输出是每篇文档的 tf-idf
+
+from gensim import corpora, models
+import json, time
 
 
+@profile
+def run(file):
+    temp_num, texts, temp_id = 0, [], []
+
+    with open(file) as f_read:
+        for line in f_read:
+            temp = json.loads(line, 'utf-8')
+            temp_id.append(temp['id'])
+            texts.append(temp['lyrics_jieba'])
+    
+            temp_num += 1
+        
+if __name__ == '__main__':
+    file = 'processed_data/lyrics_all.json_processed_jieba'
+    run(file)
+```
+
+发现读取文件占用了 4G 的内容，同时接下来的代码：
+```python
+ # 得到语料库的词典
+dictionary = corpora.Dictionary(texts)
+```
+并不支持增量字典迭代，texts 必须是全语料的文本，所以最终放弃内存占用的优化！！
+
+
+对于 raw_text 的语料文本：
+
+- 通过 dictionary = corpora.Dictionary 把语料中的每个词映射成唯一的数字 ID（通过 dictionary.token2ed 访问） ，同时统计每个词在语料中出现的次数（IDF，通过 dictionary.dfs 访问）。
+
+- 然后通过 corpus = dictionary.doc2bow 对语料进行数字化，即文档中的每个词（ID）在该文档中出现了多少次，这也相当于统计每篇文档的词频（TF）。
+
+- 最后调用 models.TfidfModle(corpus) 就可以将文档中每个词出现的次数快速地转换成 TF-IDF 。 
+
+
+### 1.3 深入理解 word2vec 
 
 
 ## 2. 模型预测过程
 
 - 从前端的文本框中获取歌词，涉及到 $.ajax 以及数据的序列化 (serialize)，详见 /web/static/index.js
 
-- 计算查询歌词的 TF-IDF，组合得到查询歌词的向量表示，然后与库中的每一首歌词向量做相似度对比，得到推荐歌词，并前端返回推荐歌词。这里把预加载模型写在外部代码中，这样就不用每来一个查询都要加载模型。然后把查询代码写在路由 /query 中，并使用 python.jsonify 向前端返回结果。这里计算相似度的时候使用了 sklearn.neighbors.NearestNeightbors 函数，参数算法采用 'brute'，这是实测的跑得最快又准确的参数算法。详见 /web/server.py
+- 计算查询歌词的 TF-IDF，组合得到查询歌词的向量表示，然后与库中的每一首歌词向量做相似度对比，得到推荐歌词，并前端返回推荐歌词。这里把预加载模型写在外部代码中，这样就不用每来一个查询都要加载模型。然后把查询代码写在路由 /query 中，并使用 python.jsonify 向前端返回结果。这里计算相似度的时候使用了 sklearn.neighbors.NearestNeighbors 函数，参数算法采用 'brute'，这是实测的跑得最快又准确的参数算法。详见 /web/server.py
+
+### 2.1 深入理解 NearestNeighbors
+
+[官方文档](http://scikit-learn.org/stable/modules/neighbors.html#brute-force)里面说 Brute Force 是最 Naive 的实现，它对所有样本点两两之间计算相似度。但是不知道为什么，在我的测试中，这个方法是最快的？？
 
 
 ## 3. 进度报告
+
+### 2016年12月9日
+
+- 优化了 CSS 代码，k_input 框增加回车搜索功能。
+
+- 深入理解结巴分词、gensim TF-IDF
+
+- 依照产品经理小彬师兄的要求，在返回的数据中加入了歌名、歌手以及图片。同时增加 popularity 特征来对歌曲进行排序。这里 popularity 的数值在 0-100 之间，distance 的数值，如果 k_max 设置为 50000 的话，在 0-20 之间； 如果 k_max 设置为 26000 的话，在 0-58 之间；
 
 ### 测试报告
 
