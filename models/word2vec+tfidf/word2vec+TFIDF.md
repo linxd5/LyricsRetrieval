@@ -19,9 +19,10 @@
 
 通过 git pull 得到最新的代码，进入 python3 虚拟环境：
 
-- `python train.py` 将在原数据文件目录下依次产生清洗后的数据文件 *_processed、jieba 分词文件 *_processed_jieba、统计 TF-IDF 文件 *_processed_jieba_tfidf、词向量文件 *_processed_jieba_tfidf_wrd2vec。以及语料词典 lyrics.dict 、语料向量 lyrics.mm 以及 lyrics.mm.index 文件。运行程序前记得把之前生成的文件删除，否则会出现一些奇怪的错误。
+- `python train.py` 将在原数据文件目录下依次产生清洗后的数据文件 *_processed、jieba 分词文件 *_processed_jieba、统计 TF-IDF 文件 *_processed_jieba_tfidf、词向量文件 *_processed_jieba_tfidf_wrd2vec。以及语料词典 lyrics.dict 、语料向量 lyrics.mm 以及 lyrics.mm.index 文件。运行程序前记得把之前生成的文件删除，否则会出现一些奇怪的错误。内存要求：6G+
 
-- 进行 web 目录下，运行 `python server`，待模型加载完后，就可以接受用户的歌词查询了。
+- 进行 web 目录下，运行 `python server.py`，待模型加载完后，就可以接受用户的歌词查询了。内存要求：2G+
+
 
 tian 程序常驻后台，通过 172.18.217.250:2333 即可访问网站
 
@@ -119,6 +120,11 @@ dictionary = corpora.Dictionary(texts)
 ### 加入歌曲信息
 
 - 因为小彬师兄在爬着网易云音乐的歌曲信息，导致我在请求歌曲信息的时候极容易 timeout !!
+
+- 预处理小彬师兄爬下来的网易云音乐的歌曲信息，只保留中歌曲的歌名、歌手、图片和流行度，代码在 backup_data 下的 preprocess_songs_detail.ipynb
+
+- 基本处理完 popularity 的逻辑； 需要注意的是，搜索流行歌曲的时候，加大 pop_input 可以筛选掉一些翻唱的版本。但是搜索不热门歌曲，例如校歌和儿歌的时候，pop_input 建议设置为 0。 
+
 
 
 ### 2016年12月9日

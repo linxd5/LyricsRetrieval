@@ -8,3 +8,4 @@ lyrics*
 *.py~
 backup_data/
 web/.idea/*
+processed_data/*

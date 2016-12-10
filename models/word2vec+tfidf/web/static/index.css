@@ -24,19 +24,27 @@ div.jumbotron form.query {
     margin-right: 50px;
 }
 
+form.query label {
+    float: left;
+    text-align: center;
+    line-height: 1.3333;
+    padding: 13px 4px 4px 10px;
+    color: #777;
+    font-weight: 500;
+}
+
 form.query input {
     width: 20%;
     float: left;
-    line-height: 1.33333333;
     padding: 4px 4px 4px 10px;
     margin: 4px 10px 0 0;
     font-size: 21px;
 }
 
 form.query button {
-    width: 60%;
     float: right;
     margin-left: 10px;
+    margin-top: 10px;
 }
 
 form.query textarea#query_lyric {
@@ -67,9 +75,16 @@ div.song_container div.lyric_container {
     float: left;
 }
 
-@media (max-width: 1300px) {
+@media (max-width: 1700px) {
     div.song_container div.lyric_container {
-        background-color: red;
+        width: 60%;
+    }
+}
+
+
+@media (max-width: 1500px) {
+    div.song_container div.lyric_container {
+        width: 50%;
     }
 }
 
