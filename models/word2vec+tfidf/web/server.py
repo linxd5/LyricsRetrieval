@@ -97,19 +97,29 @@ def query():
     for id in result_ids:
         sim_lyrics.append((id, lyrics_Chinese[id]))
 
+    print("++++ Crawler begin ...")
+
     songs_info = []
     # 通过 id 爬取歌曲相关信息
     for songid in result_ids:
         songid = int(songid)
         url = u"http://music.163.com/api/song/detail/?id=%d&ids=%%5B%d%%5D" %(songid,songid)
-        response = requests.get(url)
-        response = json.loads(response.content.decode('utf8'))['songs'][0]
         song_info = {}
-        song_info['artists'] = [artists['name'] for artists in response['artists']]
-        song_info['popularity'] = response['popularity']
-        song_info['name'] = response['name']
-        song_info['picUrl'] = response['album']['picUrl']
+        try: 
+            response = requests.get(url, timeout=0.5)
+            if response:
+                response = json.loads(response.content.decode('utf8'))['songs'][0]
+                song_info['artists'] = [artists['name'] for artists in response['artists']]
+                song_info['popularity'] = response['popularity']
+                song_info['name'] = response['name']
+                song_info['picUrl'] = response['album']['picUrl']
+        except Exception:
+            pass
+
         songs_info.append(song_info)
+        print("Songid: ", songid)
+
+    print("Songs_info: ", songs_info)
 
     return jsonify(sim_lyrics=sim_lyrics, songs_info=songs_info)
 

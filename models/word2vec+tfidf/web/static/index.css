@@ -67,6 +67,12 @@ div.song_container div.lyric_container {
     float: left;
 }
 
+@media (max-width: 1300px) {
+    div.song_container div.lyric_container {
+        background-color: red;
+    }
+}
+
 div.img_container img {
     border-radius: 100px;
 }
