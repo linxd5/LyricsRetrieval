@@ -26,7 +26,7 @@ $(function () {
                     lyric_html = '<div>' + response['sim_lyrics'][i][1] + '</div>';
                     pic_html = '<div class="img_container"> <img src="' + response['songs_info'][i]['picUrl'] +
                         '" alt="song_pic" height="150" width="150" /> </div>';
-                    lyric_container = '<div class="lyric_container">' + id_html + lyric_html + '</div>';
+                    lyric_container = '<div class="lyric_container">' + id_html + lyric_html + '<hr>' + '</div>';
                     sim_songs += '<div class="song_container">' + pic_html + lyric_container + '</div>';
                 }
                 sim_songs += '</div>';
