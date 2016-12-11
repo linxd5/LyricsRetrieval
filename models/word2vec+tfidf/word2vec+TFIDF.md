@@ -125,6 +125,8 @@ dictionary = corpora.Dictionary(texts)
 
 - 基本处理完 popularity 的逻辑； 需要注意的是，搜索流行歌曲的时候，加大 pop_input 可以筛选掉一些翻唱的版本。但是搜索不热门歌曲，例如校歌和儿歌的时候，pop_input 建议设置为 0。 
 
+- 增加了[音乐 icon](http://www.iconfont.cn/plus/search/index?searchType=icon&q=%E9%9F%B3%E7%AC%A6&page=1)
+
 
 
 ### 2016年12月9日

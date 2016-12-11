@@ -80,7 +80,6 @@ div.jumbotron div#songs_container {
 }
 
 div#songs_container div.song_container {
-    overflow: auto;
     margin-bottom: 20px;
     min-height: 250px;
 }
@@ -91,12 +90,21 @@ div.song_container div.img_container {
 }
 
 div.song_container div.lyric_container {
+    margin-bottom: 40px;
     width: 70%;
     float: left;
 }
 
-hr {
-    border-top: 1px dotted #CCC;
+@media (max-width: 1700px) {
+    div.song_container div.lyric_container {
+        width: 60%;
+    }
+}
+
+@media (max-width: 1500px) {
+    div.song_container div.lyric_container {
+        width: 50%;
+    }
 }
 
 hr {
@@ -114,18 +122,6 @@ hr:after {
     font-size: 18px;
 }
 
-@media (max-width: 1700px) {
-    div.song_container div.lyric_container {
-        width: 60%;
-    }
-}
-
-
-@media (max-width: 1500px) {
-    div.song_container div.lyric_container {
-        width: 50%;
-    }
-}
 
 div.img_container img {
     border-radius: 100px;
