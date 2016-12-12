@@ -10,7 +10,7 @@ from gensim import corpora, models
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 
-import operator
+import operator, time
 
 
 
@@ -44,10 +44,7 @@ w2v = models.Word2Vec.load(Chinese_Word2Vec_data)
 tfidf = models.TfidfModel(corpus)
 
 # 取出语料的 wrd2vec
-lyrics_item = []
-with open(processed_wrd2vec) as f_read:
-    for line in f_read:
-        lyrics_item.append(json.loads(line))
+lyrics_item = [json.loads(line) for line in open(processed_wrd2vec)]
 
 # 建立 id 到中文歌词的索引
 lyrics_Chinese = {}
@@ -68,8 +65,8 @@ lyrics_id, lyrics_vec = [], []
 for item in lyrics_item:
     lyrics_id.append(item['id'])
     lyrics_vec.append(item['lyrics_vec'])
-nbrs = NearestNeighbors(n_neighbors=k_max, algorithm='brute').fit(lyrics_vec)
-###nbrs = NearestNeighbors(n_neighbors=k_max, algorithm='auto').fit(lyrics_vec)
+
+nbrs = NearestNeighbors(n_neighbors=k_max, algorithm='kd_tree').fit(lyrics_vec)
 
 @app.route('/query', methods=['POST'])
 def query():
@@ -95,7 +92,6 @@ def query():
     # 搜索最相似的 k_max 首歌词
     distance, indices = nbrs.kneighbors(query_lyric_vec)
 
-
     # 综合考虑歌词的匹配度和歌曲的流行度 
     dis_pop = {}
     for i in range(len(indices[0])):
@@ -110,13 +106,9 @@ def query():
 
     # 只返回最相似的 k_input 个 id
     result_ids = [sorted_dis_pop[i][0] for i in range(k_input)]
-    #for i in range(k_input):
-        # result_ids.append(sorted_dis_pop[i][0])
 
     # id 到中文歌词的映射
     sim_lyrics = [(id, lyrics_Chinese[id]) for id in result_ids]
-    # for id in result_ids:
-        # sim_lyrics.append((id, lyrics_Chinese[id]))
 
     # 通过 songs_detail_Chinese 得到歌曲相关信息
     songs_info = [songs_detail_Chinese[songid] for songid in result_ids]
