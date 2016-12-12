@@ -113,6 +113,15 @@ dictionary = corpora.Dictionary(texts)
 
 [官方文档](http://scikit-learn.org/stable/modules/neighbors.html#brute-force)里面说 Brute Force 是最 Naive 的实现，它对所有样本点两两之间计算相似度。但是不知道为什么，在我的测试中，这个方法是最快的？？
 
+下面的训练时间是指 NearestNeighbors().fit() 这行代码运行的时间，预测时间是指从得到查询歌词到返回相似歌词结果的时间。前面的数值是训练时间，后一个数值是预测时间。
+
+- brute，0.4s / 0.9s
+- kd_tree，1.7s / 1s
+- ball_tree，1.9s / 0.9s
+- auto，0.4s / 0.9s
+
+训练时间相差比较大，预测时间几乎相同。
+
 
 ## 3. 进度报告
 
@@ -125,7 +134,7 @@ dictionary = corpora.Dictionary(texts)
 
 - 基本处理完 popularity 的逻辑； 需要注意的是，搜索流行歌曲的时候，加大 pop_input 可以筛选掉一些翻唱的版本。但是搜索不热门歌曲，例如校歌和儿歌的时候，pop_input 建议设置为 0。 
 
-- 增加了[音乐 icon](http://www.iconfont.cn/plus/search/index?searchType=icon&q=%E9%9F%B3%E7%AC%A6&page=1)
+- 增加了[音乐 icon](http://www.iconfont.cn/plus/search/index?searchType=icon&q=%E9%9F%B3%E7%AC%A6&page=1)，增加了歌曲之间的[分割线](https://codepen.io/ibrahimjabbari/pen/ozinB)
 
 
 
