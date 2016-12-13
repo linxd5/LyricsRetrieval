@@ -6,10 +6,11 @@ import requests
 import random
 import time
 import pymongo
+import json
 
 gevent.monkey.patch_socket()
 
-mainurl = "http://music.163.com/api/song/lyric?os=pc&lv=-1&kv=-1&tv=-1&id="
+mainurl = "http://music.163.com/api/song/detail/?ids=%%5B%d%%5D&id=%d"
 user_agent = "User-Agent:Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36"
 
 USER_AGENT_LIST= [
@@ -55,23 +56,24 @@ def exeTime(func):
     def newFunc(*args, **args2):
         start = time.time()
         back = func(*args, **args2)
-        print "%.3f taken for %s" % (time.time() - start, func.__name__)
+        print("%.3f taken for %s" % (time.time() - start, func.__name__))
         return back
     return newFunc
 
-def getUrlsFromFile(filename):
+def getUrlsFromFile(filename, batch_size = 10):
     with open('big.csv', 'r') as f:
         i = 0
         batch_urls = []
         while(True):
-            id = f.readline()
+            songid = f.readline()
             i += 1
-            if id:
-                batch_urls.append(mainurl + id.strip())
-                if i % 1 == 0:
+            if songid:
+                batch_urls.append(mainurl %(int(songid), int(songid)))
+                if i % batch_size == 0:
                     yield batch_urls
                     batch_urls = []
             else:
+                # consider the rest, which can not form a batch data
                 if len(batch_urls) > 0:
                     yield batch_urls
                 return
@@ -79,43 +81,38 @@ def getUrlsFromFile(filename):
 
 def fetchData(batch_urls):
     headers = {"USER_AGENT":random.choice(USER_AGENT_LIST)}
-    jobs = [gevent.spawn(requests.get, url, headers=headers, timeout=1) for url in batch_urls]
+    jobs = [gevent.spawn(requests.get, url, headers=headers, timeout=2) for url in batch_urls]
     gevent.joinall(jobs)
     batch_results = [job.value for job in jobs]
     return batch_results
 
-def handleBatchData(total_count, db, batch_urls, batch_results):
-    count_uncollected = 0
-    count_nolyric = 0
-    lyrics = ''
+def handleBatchData(total_count, db, batch_urls, batch_results, fwrite):
+    print('total count = %d' %(total_count))
     for i, r in enumerate(batch_results):
+        songid = batch_urls[i].split('=')[-1]
         if r:
-            r = r.json()
-            if r.has_key('uncollected'):
-                count_uncollected += 1
-            elif r.has_key('nolyric'):
-                count_nolyric += 1
-            elif r.has_key('lrc'):
-                if r['lrc'].has_key('lyric'):
-                    lyrics = r['lrc']['lyric']
-                else:
-                    count_nolyric += 1
-            else:
-                print i, "exception!!"
-            db['lyrics'].insert({'id':batch_urls[i].split('=')[-1], 'lyrics':lyrics})
-    print 'total: %d, count_uncollected: %d, count_nolyric: %d, len of lyrics: %d' %(total_count, count_uncollected, count_nolyric, len(lyrics))
+            data = {'songid':songid, 'data':json.loads(r.text)}
+            db['song_detail'].insert(data)
+        else:
+            fwrite.write(songid + '\n')
+
 
 @exeTime
 def mainPipline():
     client = pymongo.MongoClient()
     db = client["wymusic"]
     total_count = 0
+    fwrite = open('failed.txt', 'w')
     for batch_urls in getUrlsFromFile(''):
         total_count += len(batch_urls)
         batch_results = fetchData(batch_urls)
-        handleBatchData(total_count, db, batch_urls, batch_results)
-        #time.sleep(0.001)
+        handleBatchData(total_count, db, batch_urls, batch_results, fwrite)
+        time.sleep(0.001)
+    fwrite.close()
     client.close()
 
 if __name__ == '__main__':
-    mainPipline()
+    try:
+        mainPipline()
+    except Exception:
+        pass

@@ -1,6 +1,17 @@
 #coding: utf-8
 
+import cPickle
 import time
+import json
+import jieba
+#import pprint
+import re
+from collections import defaultdict
+
+from gensim import corpora, models, similarities
+from six import iteritems
+
+jieba.initialize()
 
 def timing_val(func):
     def wrapper(*arg, **kw):
@@ -10,7 +21,6 @@ def timing_val(func):
         return (t2 - t1), res, func.__name__
     return wrapper
 
-import json
 
 def json2pair(filename = './data/lyrics_all.json', ifpair = False, verbose = True):
     # read json from file, and return lyric strings
@@ -26,11 +36,44 @@ def json2pair(filename = './data/lyrics_all.json', ifpair = False, verbose = Tru
                 yield dict_lyrics['lyrics']
         total_count = total_count + 1
         if total_count % 10000 == 0 and verbose == True:
-            print "total count: %d, pair count = %d" %(total_count, pair_count)
+            print("total count: %d, pair count = %d" %(total_count, pair_count))
 
-import re
-import jieba
-jieba.initialize()
+def dump_lyrics():
+    lyrics_hash = defaultdict(str) # default value is ''
+    for songid, lyric in json2pair(ifpair=True):
+        lyrics_hash[songid] = lyric
+    data_string = cPickle.dumps(lyrics_hash)
+    # remove things like [00:01:20]
+    data_string = re.sub(r'\[\d\d:\d\d[\.:]\d\d\]', '', data_string)
+    print('dumping lyrics.hash')
+    with open('lyrics.hash', 'wb') as f:
+        f.write(data_string)
+        f.close()
+
+
+def dump_song_detail():
+    song_detail = defaultdict(str)
+    song_detail_path = "/data/zhangxb/db_project/dataset/wymusic/lyrics/songs_detail.json"
+    for detail in open(song_detail_path, 'r'):
+        temp = json.loads(detail)['data']['songs']
+        if len(temp) == 0:
+            print(detail)
+            continue
+        else:
+            detail = temp[0]
+        #pprint.pprint(detail)
+        #print(detail['songid'])
+        songid = detail['id']
+        single_song_detail = {}
+        single_song_detail['popularity'] = detail['popularity']
+        single_song_detail['name'] = detail['name']
+        single_song_detail['picUrl'] = detail['album']['blurPicUrl']
+        single_song_detail['artists'] = [artist['name'] for artist in detail['artists']]
+        song_detail[str(songid)] = single_song_detail
+    print('saving song detail')
+    with open('song_detail.pickle', 'wb') as f:
+        cPickle.dump(song_detail, f)
+        f.close()
 
 def lyric2text(lyric):
     # lyric string of one song -> token list
@@ -48,12 +91,10 @@ def get_texts():
         text = lyric2text(lyric)
         texts.append(text)
         songids.append(songid)
-    print 'get %d lyrics' %(len(texts))
+    print('get %d lyrics' %(len(texts)))
 
     return songids, texts
 
-from gensim import corpora, models, similarities
-from six import iteritems
 
 def get_dictionary(texts):
     dictionary = corpora.Dictionary(texts)
@@ -69,7 +110,7 @@ def get_corpus(dictionary, texts):
         c = dictionary.doc2bow(text)
         corpus.append(c)
         if i % 10000 == 0:
-            print i
+            print(i)
 
     return corpus
 
@@ -84,9 +125,11 @@ def fit_lsi(dictionary, corpus_tfidf):
     corpus_lsi = lsi[corpus_tfidf]
     return lsi, corpus_lsi
 
-import cPickle
 
 def pipline():
+    """
+    this function may cost almost 2 hours for lyrics_all.json
+    """
     songids, texts = get_texts()
     dictionary = get_dictionary(texts)
     corpus = get_corpus(dictionary, texts)
@@ -98,25 +141,27 @@ def pipline():
     # fiting similarity matrix
     index = similarities.MatrixSimilarity(corpus_lsi)
 
-    print 'saving songids'
+    print('saving songids')
     with open('songids.pickle', 'wb') as f:
         cPickle.dump(songids, f)
         f.close()
 
-    print 'saving corpus.mm'
+    print('saving corpus.mm')
     corpora.MmCorpus.serialize('corpus.mm', corpus)
 
-    print 'saving lyric.dict'
+    print('saving lyric.dict')
     dictionary.save('lyrics.dict')
 
-    print 'saving corpus_lsi.mm'
+    print('saving corpus_lsi.mm')
     corpora.MmCorpus.serialize('corpus_lsi.mm', corpus_lsi)
 
-    print 'saving lyrics.lsi'
+    print('saving lyrics.lsi')
     lsi.save('lyrics.lsi')
 
-    print 'saving lyrics.index'
+    print('saving lyrics.index')
     index.save('lyrics.index')
 
 if __name__ == '__main__':
-    pipline()
+    #pipline()
+    dump_lyrics()
+    #dump_song_detail()
