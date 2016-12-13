@@ -13,7 +13,7 @@ count_playlist = 0
 
 
 class Crawler(CrawlSpider):
-    name = 'musicCrawler'
+    name = 'wymusic'
     rules = [
         Rule(LinkExtractor(allow='/song\?id=\d+'), follow=False, callback='parseSong', process_links='filterLinks'),
         Rule(LinkExtractor(allow='/playlist\?id=\d+'), follow=True, callback='parsePlaylist', process_links='filterLinks')
