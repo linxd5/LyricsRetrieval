@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>歌词查询</title>
+    <meta charset="utf-8">
+    <!--保存为本地文件可以加快网站加载速度-->
+    <link href="../static/bootstrap.min.css" rel="stylesheet">
+    <link href="../static/jumbotron-narrow.css" rel="stylesheet">
+    <script src="../static/jquery.min.js"></script>
+    <script src="../static/index.js"></script>
+    <link href="../static/index.css" rel="stylesheet">
+
+</head>
+
+<body>
+<div class="container">
+    <div class="header">
+        <div class="icon_container">
+            <img src="../static/music_icon.png" alt="music_icon" />
+        </div>
+        <h3 class="text-muted">相似歌词搜索</h3>
+    </div>
+
+    <div class="jumbotron">
+        <form class="query">
+            <textarea id='query_lyric' name='query_lyric' cols='20' rows='20' placeholder="请输入歌词"></textarea>
+            <label>歌曲数目：</label>
+            <input type="text" name="k_input" value="5"/>
+            <label>流行度：</label>
+            <input type="text" name="pop_input" value="0" />
+            <label>模型选择：</label>
+            <select name="model" style="margin: 10px 10px 10px 10px;">
+                <option value="word2vec_tfidf">word2vec_tfidf</option>
+                <option value="wmd">wmd</option>
+                <option value="lsi">lsi</option>
+            </select>
+            <button id="query_button" class="btn btn-lg btn-primary btn-block" type="button">查询</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>
