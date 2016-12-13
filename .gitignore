@@ -1,1 +1,2 @@
 models/wmd/word2vec_models/*
+*.pyc
