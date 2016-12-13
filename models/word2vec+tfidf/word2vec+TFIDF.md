@@ -281,3 +281,28 @@ f_write.write(temp_dict + '\n')
 ### 2016 年12月3日
 - 参考 http://stevenloria.com/finding-important-words-in-a-document-using-tf-idf/ ，实现了能运行的 tf-idf。
 
+
+## 4. 分布式协作开发
+
+### 4.1 git 分布式协作
+
+- 如往常一般 new 一个 repository。
+
+- 点击 repository 中的 Settings，然后点击左侧的 Collaborators。
+
+- 在文本框中输入小伙伴的 id，点击 Add collaborator，小伙伴同意后，就可以愉快地一起工作啦。
+
+- **每次工作前，记得通过 `git pull` 来拉取最新项目。每次工作后，记得通过 `git push` 来上传项目更新。**
+
+
+### 4.2 代码整合
+
+我觉得相对独立地开发并没有错误，因为我们的代码本来就是相对独立的。而且我也提供了前后端的同一模板，每个独立的子模块都应该能够独立地跑起来。
+
+代码整合的工作如下：
+
+- 统一的环境配置（virtualenv+python3）
+
+- 将每个独立子模块的 server.py 抽取出来，形成一个整合的 server.py；这个过程因为有统一的前后端模板，所以只有子模块没有问题，这里也不应该存在问题。
+
+- 注意配置好模型文件和前端文件的路径。这个可以使用简单的拷贝文件命令就能实现。
