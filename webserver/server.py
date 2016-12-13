@@ -5,15 +5,19 @@ from flask import Flask, request, render_template, jsonify
 app = Flask(__name__)
 
 
-import re, json, jieba
-from gensim import corpora, models
 import numpy as np
+import re, json, jieba
+import os.path
+import cPickle
+import time
+from gensim import corpora, models, similarities
 from sklearn.neighbors import NearestNeighbors
 
 import operator
 import sys
 sys.path.append('../')
 from models.wmd.wmd import WMD
+from models.lsi.train import lyric2text
 
 w2v_model_path = '/data/zhs/db_project/models/wmd/word2vec_models/word2vec_60.bin.gz'
 wmd = WMD(w2v_model_path, 60, 3)
@@ -85,13 +89,58 @@ nbrs = NearestNeighbors(n_neighbors=k_max, algorithm='brute').fit(lyrics_vec)
 
 print('Done')
 
+# loading lsi models
+print('loading lsi models')
+begin = time.time()
+lsi_root_dir = '/data/zhangxb/db_project/models/lsi/persistence/'
+lsi_dict = corpora.Dictionary.load(os.path.join(lsi_root_dir, 'lyrics.dict'))
+lsi = models.LsiModel.load(os.path.join(lsi_root_dir, 'lyrics.lsi'))
+lsi_corpus= corpora.MmCorpus(os.path.join(lsi_root_dir, 'corpus_lsi.mm'))
+lsi_index = similarities.MatrixSimilarity.load(os.path.join(lsi_root_dir, 'lyrics.index'))
+lsi_songids = cPickle.load(open(os.path.join(lsi_root_dir, 'songids.pickle'), 'rb'))
+lyrics_hash = cPickle.load(open(os.path.join(lsi_root_dir, 'lyrics.hash'), 'rb'))
+song_detail = cPickle.load(open(os.path.join(lsi_root_dir, 'song_detail.pickle'), 'rb'))
+end = time.time()
+print('done loading lsi models, cost %f seconds' %(end - begin))
+
+
+def handle_query_lsi(request):
+    #print(request.form)
+    k_input = int(request.form.get('k_input', '1'))
+    query_lyric = request.form.get('query_lyric', '')
+    pop_input = float(request.form.get('pop_input', '1.0'))
+    #model = request.form.get('model', '')
+
+    #if model == 'lsi':
+    doc_cut = lyric2text(query_lyric)
+    vec_bow = lsi_dict.doc2bow(doc_cut)
+    vec_lsi = lsi[vec_bow]
+    sims = lsi_index[vec_lsi]
+    sims = sorted(enumerate(sims), key=lambda item: -item[1])
+    songids = [lsi_songids[idindex] for idindex, score in sims[0:k_input]]
+    sim_lyrics = [(str(songid), lyrics_hash[songid]) for songid in songids]
+    songs_info = [song_detail[songid] for songid in songids]
+
+    # re-order according to popularity weight
+    weight = [(sims[i][1] + pop_input / 100 * songs_info[i]['popularity']) for i in range(k_input)]
+    weight = sorted(enumerate(weight), key = lambda x: x[1] , reverse=True) # [(index, new_weight), (), ()]
+
+    # re-order sim_lyrics and songs_info according to new weight
+    sim_lyrics = [sim_lyrics[weight[i][0]] for i, sim in enumerate(sim_lyrics)]
+    songs_info = [songs_info[weight[i][0]] for i, info in enumerate(songs_info)]
+
+    return jsonify(sim_lyrics=sim_lyrics, songs_info=songs_info)
+
+
 @app.route('/query', methods=['POST'])
 def query():
-    print(request.form)
+    model = request.form.get('model', '')
+    if model == 'lsi':
+        return handle_query_lsi(request)
+
     k_input = int(request.form.get('k_input', ''))
     query_lyric = request.form.get('query_lyric', '')
     pop_input = request.form.get('pop_input', '')
-    model = request.form.get('model', '')
 
     # 对查询歌词进行清洗和分词
     query_lyric = re.sub(u'[^\u4e00-\u9fa5]', u' ', query_lyric)
@@ -131,21 +180,21 @@ def query():
     # 如果选择了wmd模型，进行wmd重新排序
     if model == 'wmd':
         # id 到分词后歌词的映射
-        print(result_ids)
-        print(k_input)
+        #print(result_ids)
+        #print(k_input)
         filtered_lyrics = []
         for id in result_ids:
             filtered_lyrics.append((id, lyrics_segmented[id]))
 
         ans = wmd.query(query_lyric, filtered_lyrics)
 
-        print(filtered_lyrics)
-        print(ans)
+        #print(filtered_lyrics)
+        #print(ans)
 
         result_ids = []
         for i in range(k_input):
             result_ids.append(ans[i][0])
-        print(result_ids)
+        #print(result_ids)
 
     # id 到中文歌词的映射
     sim_lyrics = [(id, lyrics_Chinese[id]) for id in result_ids]
