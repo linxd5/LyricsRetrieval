@@ -26,7 +26,7 @@
 
 tian 程序常驻后台，通过 172.18.217.250:2333 即可访问网站
 
-后台运行程序：`setsid python server.py 2>&1 ~/db_project.log`
+后台运行程序：`setsid python server.py >> ~/db_project.log 2>&1`
 
 关闭后台程序：`ps -aux | grep server.py`，找到进程 ID 并 kill -9 。
 
